@@ -3,12 +3,20 @@ from yt_dlp import YoutubeDL
 import pygame
 from collections import deque
 import threading
-
-#Still want to add something here that instead of a static QR code image,
-# the program starts and gets the system IP address,
-# uses that to build a QR code on startup that is displayed on the home page.
+import socket
+import segno
 # Many User Experience things to do.. too many to list at the moment.
 
+#get the client IP
+hostname = socket.gethostname()
+ip_address = socket.gethostbyname(hostname)
+
+#create qr code image that goes to localhost
+qrcode = segno.make_qr("http://" + str(ip_address) + ":5000")
+qrcode.save("./static/qrcode.png", scale=10)
+
+# getting the IP address using socket.gethostbyname() method
+ip_address = socket.gethostbyname(hostname)
 
 app = Flask(__name__)
 
