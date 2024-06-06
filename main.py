@@ -7,16 +7,7 @@ import socket
 import segno
 # Many User Experience things to do.. too many to list at the moment.
 
-#get the client IP
-hostname = socket.gethostname()
-ip_address = socket.gethostbyname(hostname)
 
-#create qr code image that goes to localhost
-qrcode = segno.make_qr("http://" + str(ip_address) + ":5000")
-qrcode.save("./static/qrcode.png", scale=10)
-
-# getting the IP address using socket.gethostbyname() method
-ip_address = socket.gethostbyname(hostname)
 
 app = Flask(__name__)
 
@@ -45,6 +36,17 @@ file_opts = {
     }],
     'outtmpl': '%(title)s.%(ext)s',  # Save the file with the video title as the filename
 }
+
+
+# Function to create a QR code on run for scan-able link.
+def create_qr_code():
+    # get the client IP
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+
+    # create qr code image that goes to localhost
+    qrcode = segno.make_qr("http://" + str(ip_address) + ":5000")
+    qrcode.save("./static/qrcode.png", scale=10)
 
 # Function to add a song to the playlist
 def add_to_playlist(video_url):
@@ -81,6 +83,10 @@ def play_songs():
                 else:
                     current_song = None
         stop_event.wait(1)  # Sleep for a short duration to avoid busy-waiting
+
+
+# Create our QR Code Before run
+create_qr_code()
 
 # Start the play_songs thread
 play_songs_thread = threading.Thread(target=play_songs)
